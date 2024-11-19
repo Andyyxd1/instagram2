@@ -10,14 +10,16 @@ using InstagramMVC.Utilities;
 
 namespace InstagramMVC.Controllers
 {
-    public class PictureController : Controller
+    [ApiController]
+    [Route("api/[controller]")]
+    public class PictureAPIController : Controller
     {
         private readonly IPictureRepository _pictureRepository;
         private readonly ICommentRepository _commentRepository;
-        private readonly ILogger<PictureController> _logger;
+        private readonly ILogger<PictureAPIController> _logger;
         private readonly UserManager<IdentityUser> _userManager;
 
-        public PictureController(IPictureRepository pictureRepository, ICommentRepository commentRepository, ILogger<PictureController> logger, UserManager<IdentityUser> userManager)
+        public PictureAPIController(IPictureRepository pictureRepository, ICommentRepository commentRepository, ILogger<PictureAPIController> logger, UserManager<IdentityUser> userManager)
         {
             _commentRepository = commentRepository;
             _pictureRepository = pictureRepository;
@@ -32,14 +34,14 @@ namespace InstagramMVC.Controllers
             var currentUserName = _userManager.GetUserName(User);
             if (string.IsNullOrEmpty(currentUserName))
             {
-                _logger.LogError("[PictureController] Current user is null or empty when accessing MyPage.");
+                _logger.LogError("[PictureAPIController] Current user is null or empty when accessing MyPage.");
                 return Unauthorized();
             }
 
             var allPictures = await _pictureRepository.GetAll();
             if (allPictures == null)
             {
-                _logger.LogError("[PictureController] Could not retrieve images for user {UserName}", currentUserName);
+                _logger.LogError("[PictureAPIController] Could not retrieve images for user {UserName}", currentUserName);
                 allPictures = Enumerable.Empty<Picture>();
             }
 
@@ -59,7 +61,7 @@ namespace InstagramMVC.Controllers
 
             if (pictures == null)
             {
-                _logger.LogError("[PictureController] Picture list, not found.");
+                _logger.LogError("[PictureAPIController] Picture list, not found.");
             }
 
             return View(pictureViewModel);
@@ -72,7 +74,7 @@ namespace InstagramMVC.Controllers
 
             if (pictures == null)
             {
-                _logger.LogError("[PictureController] Picture list, not found.");
+                _logger.LogError("[PictureAPIController] Picture list, not found.");
                 return NotFound("Pictures not found");
             }
 
@@ -128,7 +130,7 @@ namespace InstagramMVC.Controllers
             }
             else
             {
-                _logger.LogWarning("[PictureController] Could not create new image.");
+                _logger.LogWarning("[PictureAPIController] Could not create new image.");
                 return View(newImage);
             }
         }
@@ -139,7 +141,7 @@ namespace InstagramMVC.Controllers
             var picture = await _pictureRepository.PictureId(id);
             if (picture == null)
             {
-                _logger.LogError("[PictureController] picture id not found");
+                _logger.LogError("[PictureAPIController] picture id not found");
                 return NotFound();
             }
 
@@ -230,7 +232,7 @@ namespace InstagramMVC.Controllers
             }
             else
             {
-                _logger.LogWarning("[PictureController] Could not update the image.");
+                _logger.LogWarning("[PictureAPIController] Could not update the image.");
                 TempData["Source"] = source; // Preserve source value if the update fails
                 return View(updatedPicture);
             }
@@ -243,7 +245,7 @@ namespace InstagramMVC.Controllers
             var picture = await _pictureRepository.PictureId(id);
             if (picture == null)
             {
-                _logger.LogError("[PictureController] picture with Id not found {id}", id);
+                _logger.LogError("[PictureAPIController] picture with Id not found {id}", id);
                 return NotFound();
             }
 
@@ -265,7 +267,7 @@ namespace InstagramMVC.Controllers
             var picture = await _pictureRepository.PictureId(id);
             if (picture == null)
             {
-                _logger.LogError("[PictureController] picture with Id not found {id}", id);
+                _logger.LogError("[PictureAPIController] picture with Id not found {id}", id);
                 return NotFound();
             }
 
@@ -289,7 +291,7 @@ namespace InstagramMVC.Controllers
             bool success = await _pictureRepository.Delete(id);
             if (!success)
             {
-                _logger.LogError("[PictureController] picture not deleted with {Id}", id);
+                _logger.LogError("[PictureAPIController] picture not deleted with {Id}", id);
                 return BadRequest("Picture not deleted");
             }
 

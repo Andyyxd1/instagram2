@@ -8,15 +8,16 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 
 namespace InstagramMVC.Controllers;
-
-public class NoteController : Controller
+[ApiController]
+[Route("api/[controller]")]
+public class NoteAPIController : Controller
 {
-    private readonly ILogger<NoteController> _logger;
+    private readonly ILogger<NoteAPIController> _logger;
     private readonly ICommentRepository _commentRepository;
     private readonly INoteRepository _noteRepository;
     private readonly UserManager<IdentityUser> _userManager;
 
-    public NoteController(INoteRepository noteRepository, ICommentRepository commentRepository, ILogger<NoteController> logger, UserManager<IdentityUser> userManager)
+    public NoteAPIController(INoteRepository noteRepository, ICommentRepository commentRepository, ILogger<NoteAPIController> logger, UserManager<IdentityUser> userManager)
     {
         _noteRepository = noteRepository;
         _commentRepository = commentRepository;
@@ -31,14 +32,14 @@ public async Task<IActionResult> MyPage()
     var currentUserName = _userManager.GetUserName(User);
     if (string.IsNullOrEmpty(currentUserName))
     {
-        _logger.LogError("[NoteController] Current user is null or empty when accessing MyPage.");
+        _logger.LogError("[NoteAPIController] Current user is null or empty when accessing MyPage.");
         return Unauthorized();
     }
 
     var allNotes = await _noteRepository.GetAll();
     if (allNotes == null)
     {
-        _logger.LogError("[NoteController] Could not retrieve notes for user {UserName}", currentUserName);
+        _logger.LogError("[NoteAPIController] Could not retrieve notes for user {UserName}", currentUserName);
         return NotFound();
     }
 
@@ -58,7 +59,7 @@ public async Task<IActionResult> MyPage()
         var note = await _noteRepository.GetNoteById(id);
         if (note == null)
         {
-            _logger.LogError("[NoteController] Note not found for the NoteId: {NoteId}", id);
+            _logger.LogError("[NoteAPIController] Note not found for the NoteId: {NoteId}", id);
             return NotFound();
         }
 
@@ -80,7 +81,7 @@ public async Task<IActionResult> MyPage()
         var note = await _noteRepository.GetNoteById(id);
         if (note == null)
         {
-            _logger.LogError("[NoteController] Note for deletion not found for the NoteId: {NoteId}", id);
+            _logger.LogError("[NoteAPIController] Note for deletion not found for the NoteId: {NoteId}", id);
             return NotFound();
         }
 
@@ -114,7 +115,7 @@ public async Task<IActionResult> MyPage()
             await _noteRepository.Create(note);
             return RedirectToAction(nameof(MyPage));
         }
-        _logger.LogWarning("[NoteController] Creating Note failed {@note}", note);
+        _logger.LogWarning("[NoteAPIController] Creating Note failed {@note}", note);
         return View(note);
     }
 
@@ -125,7 +126,7 @@ public async Task<IActionResult> MyPage()
         var note = await _noteRepository.GetNoteById(id);
         if (note == null)
         {
-            _logger.LogError("[NoteController] Note not found for NoteId {NoteId}", id);
+            _logger.LogError("[NoteAPIController] Note not found for NoteId {NoteId}", id);
             return NotFound();
         }
 
@@ -147,14 +148,14 @@ public async Task<IActionResult> MyPage()
         if (!ModelState.IsValid)
         {
             TempData["Source"] = source; // Preserve source value in case of validation error
-            _logger.LogWarning("[NoteController] Note update failed due to invalid ModelState {@note}", note);
+            _logger.LogWarning("[NoteAPIController] Note update failed due to invalid ModelState {@note}", note);
             return View(note);
         }
 
         var existingNote = await _noteRepository.GetNoteById(note.NoteId);
         if (existingNote == null)
         {
-            _logger.LogError("[NoteController] Note not found for update. NoteId: {NoteId}", note.NoteId);
+            _logger.LogError("[NoteAPIController] Note not found for update. NoteId: {NoteId}", note.NoteId);
             return NotFound();
         }
 
@@ -184,7 +185,7 @@ public async Task<IActionResult> Notes()
     var notesViewModel = new NotesViewModel(notes, "Notes");
     if (notes == null)
     {
-        _logger.LogError("[NoteController] Note List not found when running _noteRepository.GetAll()");
+        _logger.LogError("[NoteAPIController] Note List not found when running _noteRepository.GetAll()");
         return NotFound("Note List not found.");
     }
     
@@ -200,7 +201,7 @@ public async Task<IActionResult> Notes()
         var note = await _noteRepository.GetNoteById(id);
         if (note == null)
         {
-            _logger.LogError("[NoteController] Note not found for the NoteId: {NoteId}", id);
+            _logger.LogError("[NoteAPIController] Note not found for the NoteId: {NoteId}", id);
             return NotFound("Note not found for the NoteId");
         }
 

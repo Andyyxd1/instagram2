@@ -1,59 +1,50 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
+using InstagramMVC.DAL;
 using Serilog;
 using Serilog.Events;
-using InstagramMVC.DAL;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddControllersWithViews();
-
-// Configure the connection string and register MediaDbContext
-var connectionString = builder.Configuration.GetConnectionString("MediaDbContextConnection")
-    ?? throw new InvalidOperationException("Connection string 'MediaDbContextConnection' not found.");
-
-builder.Services.AddDbContext<MediaDbContext>(options =>
-{
-    options.UseSqlite(connectionString);  // Use SQLite with the provided connection string
+builder.Services.AddControllers().AddNewtonsoftJson(options => {
+    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
 });
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<MediaDbContext>();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+builder.Services.AddDbContext<DbContext>(options => {
+    options.UseSqlite(builder.Configuration["ConnectionStrings:ItemDbContextConnection"]);});
 
-// Register IPictureRepository with its concrete implementation PictureRepository
+builder.Services.AddControllers();
+builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("CorsPolicy",
+                builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+        });
+
 builder.Services.AddScoped<IPictureRepository, PictureRepository>();
 builder.Services.AddScoped<INoteRepository, NoteRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 
-builder.Services.AddRazorPages();
-builder.Services.AddSession();
+var loggerConfiguration = new LoggerConfiguration()
+    .MinimumLevel.Information() // levels: Trace< Information < Warning < Erorr < Fatal
+    .WriteTo.File($"APILogs/app_{DateTime.Now:yyyyMMdd_HHmmss}.log")
+    .Filter.ByExcluding(e => e.Properties.TryGetValue("SourceContext", out var value) &&
+                            e.Level == LogEventLevel.Information &&
+                            e.MessageTemplate.Text.Contains("Executed DbCommand"));
+var logger = loggerConfiguration.CreateLogger();
+builder.Logging.AddSerilog(logger);
 
 var app = builder.Build();
-// Autentisering i program cs 
-/*builder.Services.AddDefaultIdentity<IdentityUser>(options => 
-    options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<DbContext>();
-
-
- */ 
- // DBInit.cs
- //await DBInit.SeedAsync(app);
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseDeveloperExceptionPage();
+    app.UseSwagger();
+    app.UseSwaggerUI();
+    
 }
-
 app.UseStaticFiles();
-
-app.UseAuthentication(); 
-app.UseAuthorization();
-app.MapRazorPages();
-
-// Optional: Use a default controller route if needed
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}"); 
-
-// Start the app
+app.UseRouting();
+app.UseCors("CorsPolicy");
+app.MapControllerRoute(name: "api", pattern: "{controller}/{action=Index}/{id?}");
+    
 app.Run();

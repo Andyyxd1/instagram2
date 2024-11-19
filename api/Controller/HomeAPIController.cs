@@ -2,7 +2,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Instagram.Controllers
 {
-    public class HomeController : Controller
+    [ApiController]
+    [Route("api/[controller]")]
+    public class HomeAPIController : Controller
     {
         // GET: /Home/Index
         public IActionResult Index()
