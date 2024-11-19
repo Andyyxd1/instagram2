@@ -9,16 +9,15 @@ using Microsoft.AspNetCore.Identity;
 
 namespace InstagramMVC.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class CommentAPIController : Controller
+    
+    public class CommentController : Controller
     {
         private readonly ICommentRepository _CommentRepository;
-        private readonly ILogger<CommentAPIController> _logger;
+        private readonly ILogger<CommentController> _logger;
         private readonly UserManager<IdentityUser> _userManager;
 
 
-        public CommentAPIController(ICommentRepository CommentRepository, ILogger<CommentAPIController> logger, UserManager<IdentityUser> userManager)
+        public CommentController(ICommentRepository CommentRepository, ILogger<CommentController> logger, UserManager<IdentityUser> userManager)
         {
             _CommentRepository= CommentRepository;
             _logger = logger;
@@ -61,7 +60,7 @@ namespace InstagramMVC.Controllers
                 return RedirectToAction("Grid", "Picture", new { id = Comment.PictureId });
             }
 
-            _logger.LogWarning("[CommentAPIController] Failed to upload comment, ModelState not working");
+            _logger.LogWarning("[CommentController] Failed to upload comment, ModelState not working");
             return View(Comment);
         }
         catch (Exception e)
@@ -79,7 +78,7 @@ public async Task<IActionResult> EditComment(int Id, string source = "Grid")
 
     if (comment == null)
     {
-        _logger.LogError("[CommentAPIController] Could not find comment with id {Id}", Id);
+        _logger.LogError("[CommentController] Could not find comment with id {Id}", Id);
         return NotFound();
     }
 
@@ -130,7 +129,7 @@ public async Task<IActionResult> EditComment(int Id, Comment updatedComment, str
     }
     else
     {
-        _logger.LogWarning("[CommentAPIController] Could not update the comment.");
+        _logger.LogWarning("[CommentController] Could not update the comment.");
         TempData["Source"] = source; // Preserve source value in case of update failure
         return View(updatedComment);
     }
@@ -172,7 +171,7 @@ public async Task<IActionResult> DeleteConfirmedComment(int id, string source)
     var comment = await _CommentRepository.GetCommentById(id);
     if (comment == null)
     {
-        _logger.LogWarning("[CommentAPIController] Comment with Id {CommentId} not found", id);
+        _logger.LogWarning("[CommentController] Comment with Id {CommentId} not found", id);
         return NotFound();
     }
 
@@ -187,7 +186,7 @@ public async Task<IActionResult> DeleteConfirmedComment(int id, string source)
 
     if (!success)
     {
-        _logger.LogError("[CommentAPIController] Comment with Id {CommentId} was not deleted successfully", id);
+        _logger.LogError("[CommentController] Comment with Id {CommentId} was not deleted successfully", id);
         TempData["Source"] = source; // Preserve source value in case of deletion failure
         return BadRequest("Comment not deleted");
     }
@@ -235,7 +234,7 @@ public async Task<IActionResult> CreateCommentNote(Comment Comment)
             
         }
                                                 
-        _logger.LogWarning("[CommentAPIController] Error new note upload, ModelState invalid");
+        _logger.LogWarning("[CommentController] Error new note upload, ModelState invalid");
         return View(Comment);
     }
     catch (Exception e)
@@ -253,7 +252,7 @@ public async Task<IActionResult> EditCommentNote(int id, string source = "Notes"
 
     if (comment == null)
     {
-        _logger.LogError("[CommentAPIController] Could not find comment with id {Id}", id);
+        _logger.LogError("[CommentController] Could not find comment with id {Id}", id);
         return NotFound();
     }
 
@@ -305,7 +304,7 @@ public async Task<IActionResult> EditCommentNote(int id, Comment updatedComment,
     }
     else
     {
-        _logger.LogWarning("[CommentAPIController] Could not update the comment.");
+        _logger.LogWarning("[CommentController] Could not update the comment.");
         TempData["Source"] = source; // Preserve source value in case of update failure
         return View(updatedComment);
     }
