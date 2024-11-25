@@ -35,3 +35,4 @@ yarn-error.log*
 # Ignorer genererte JSON-filer
 *.sourcelink.json
 
+/obj/api
