@@ -10,7 +10,8 @@ using InstagramMVC.Utilities;
 
 namespace InstagramMVC.Controllers
 {
-    
+    [Route("api/[controller]")]
+    [ApiController]
     public class PictureController : Controller
     {
         private readonly IPictureRepository _pictureRepository;
@@ -26,7 +27,7 @@ namespace InstagramMVC.Controllers
             _userManager = userManager;
         }
 
-        [HttpGet]
+        [HttpGet("MyPage")]
         [Authorize]
         public async Task<IActionResult> MyPage()
         {
@@ -52,7 +53,7 @@ namespace InstagramMVC.Controllers
             return View("MyPage", pictureViewModel);
         }
 
-        [HttpGet]
+        [HttpGet("Picture")]
         public async Task<IActionResult> Picture()
         {
             var pictures = await _pictureRepository.GetAll();
@@ -88,7 +89,7 @@ namespace InstagramMVC.Controllers
             return View();
         }
 
-        [HttpPost]
+        [HttpPost("Create")]
         [Authorize]
         public async Task<IActionResult> Create(Picture newImage, IFormFile PictureUrl)
         {
@@ -134,7 +135,7 @@ namespace InstagramMVC.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpGet("Details/{id}")]
         public async Task<IActionResult> Details(int id, string source = "Grid")
         {
             var picture = await _pictureRepository.PictureId(id);
@@ -148,7 +149,7 @@ namespace InstagramMVC.Controllers
             return View("PictureDetails", picture);
         }
 
-        [HttpGet]
+        [HttpGet("Edit/{id}")]
         [Authorize]
         public async Task<IActionResult> Edit(int id, string source = "Grid")
         {
@@ -170,7 +171,7 @@ namespace InstagramMVC.Controllers
             return View(picture);
         }
 
-        [HttpPost]
+        [HttpPost("Edit/{id}")]
         [Authorize]
         public async Task<IActionResult> Edit(int id, Picture updatedPicture, IFormFile? newPictureUrl, string source)
         {
@@ -237,7 +238,7 @@ namespace InstagramMVC.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpGet("Delete/{id}")]
         [Authorize]
         public async Task<IActionResult> Delete(int id, string source = "Grid")
         {
@@ -259,7 +260,7 @@ namespace InstagramMVC.Controllers
             return View(picture);
         }
 
-        [HttpPost]
+        [HttpPost("DeleteConfirmed/{id}")]
         [Authorize]
         public async Task<IActionResult> DeleteConfirmed(int id, string source)
         {
