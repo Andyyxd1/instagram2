@@ -1,50 +1,63 @@
 import React, { useEffect, useState } from 'react';
-import { getNotes, deleteNote } from '../Services/noteService';
-import { useNavigate } from 'react-router-dom';
+import { Table, Button } from 'react-bootstrap';
 
-const NotesPage = () => {
-  const [notes, setNotes] = useState([]);
-  const navigate = useNavigate();
+const API_URL = 'http://localhost:3000'
 
-  useEffect(() => {
+const NotesPage= () => {
+    const [notes, setNotes] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+  
     const fetchNotes = async () => {
+      setLoading(true); // Set loading to true when starting the fetch
+      setError(null);   // Clear any previous errors
+  
       try {
-        const data = await getNotes();
+        const response = await fetch(`${API_URL}/api/note/GetNotes`); 
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
         setNotes(data);
+        console.log(data);
       } catch (error) {
-        console.error("Failed to fetch notes:", error);
+        console.error(`There was a problem with the fetch operation: ${error.message}`);
+        setError('Failed to fetch items.');
+      } finally {
+        setLoading(false); // Set loading to false once the fetch is complete
       }
-    };
-    fetchNotes();
-  }, []);
-
-  const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this note?")) {
-      try {
-        await deleteNote(id);
-        setNotes(notes.filter((note) => note.noteId !== id));
-      } catch (error) {
-        console.error("Failed to delete note:", error);
-      }
-    }
-  };
+    };  
+    useEffect(() => {
+      fetchNotes();
+    }, []);
 
   return (
-    <div>
-      <h1>Notes</h1>
-      <button onClick={() => navigate('/notes/create')}>Create Note</button>
-      <ul>
-        {notes.map((note) => (
-          <li key={note.noteId}>
-            <h3>{note.title}</h3>
-            <p>{note.content}</p>
-            <button onClick={() => navigate(`/notes/edit/${note.noteId}`)}>Edit</button>
-            <button onClick={() => handleDelete(note.noteId)}>Delete</button>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
+<div>
+    <h1>Notes</h1>
+    <Button onClick={fetchNotes} className="btn btn-primary mb-3" disabled={loading}>
+      {loading ? 'Loading...' : 'Refresh Items'}
+    </Button>
+    {error && <p style={{ color: 'red' }}>{error}</p>}
+    <Table striped bordered hover>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Title</th>
+        <th>Content</th>
+      </tr>
+    </thead>
+    <tbody>
+      {notes.map(note => (
+        <tr key={note.noteId}>
+          <td>{note.noteId}</td>
+          <td>{note.Title}</td>
+          <td>{note.Content}</td>
+        </tr>
+      ))}
+    </tbody>
+    </Table>
+  </div>
+);
 };
 
 export default NotesPage;
