@@ -26,12 +26,12 @@ builder.Services.AddScoped<IPictureRepository, PictureRepository>();
 builder.Services.AddScoped<INoteRepository, NoteRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 
+
 var app = builder.Build();
 
 // Configure middleware
 if (app.Environment.IsDevelopment())
 {
-    DBInit.SeedAsync(app);
     app.UseSwagger();
     app.UseSwaggerUI();
 }

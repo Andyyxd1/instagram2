@@ -11,7 +11,8 @@ namespace InstagramMVC.DTOs
         public string Title { get; set; } = string.Empty;
 
         [Required]
+        [Display(Name = "Content")]
         public string Content { get; set; }
-
+        public DateTime UploadDate {get; set;} // dato innlegget ble opprettet
     }
 }
