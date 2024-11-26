@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Table, Button } from 'react-bootstrap';
 
-const API_URL = 'http://localhost:3000'
+const API_URL = 'http://localhost:5255'
 
 const NotesPage= () => {
     const [notes, setNotes] = useState([]);
@@ -13,7 +13,7 @@ const NotesPage= () => {
       setError(null);   // Clear any previous errors
   
       try {
-        const response = await fetch(`${API_URL}/api/Note/GetNotes`); 
+        const response = await fetch(`${API_URL}/api/NoteAPI/GetNotes`); 
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
