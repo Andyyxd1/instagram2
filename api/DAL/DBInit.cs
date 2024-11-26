@@ -67,14 +67,14 @@ public static class DBInit
                     Title = "Dagbok - Dag 1", 
                     Content = "Startet dagen med en god frokost og dro på tur.", 
                     UploadDate = DateTime.Now.AddDays(-10), 
-                    username = defaultUser.UserName 
+                    
                 },
                 new Note 
                 { 
                     Title = "Dagbok - Dag 2", 
                     Content = "Møtte noen venner for fjelltur. Fantastisk utsikt!", 
                     UploadDate = DateTime.Now.AddDays(-9), 
-                    username = defaultUser.UserName 
+                    
                 }
             };
             

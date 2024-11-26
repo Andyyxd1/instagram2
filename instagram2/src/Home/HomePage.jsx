@@ -1,11 +1,11 @@
 import React from 'react';
 
-const HomePage = () => {
+function HomePage() {
   return (
-    <div className="text-center">
-        <h1 className="display-4">du er en esel</h1>
+    <div>
+      <h1>HomePage</h1>
     </div>
   );
-};
+}
 
 export default HomePage;

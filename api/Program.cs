@@ -1,44 +1,48 @@
 using Microsoft.EntityFrameworkCore;
 using InstagramMVC.DAL;
-using Serilog;
-using Serilog.Events;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
-
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddDbContext<DbContext>(options => {
-    options.UseSqlite(builder.Configuration["ConnectionStrings:ItemDbContextConnection"]);});
-
+// Add services to the container
 builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+// Configure CORS policy to allow React and Swagger
 builder.Services.AddCors(options =>
         {
             options.AddPolicy("CorsPolicy",
                 builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
         });
 
+// Register the database context
+builder.Services.AddDbContext<MediaDbContext>(options =>
+{
+    options.UseSqlite(builder.Configuration.GetConnectionString("MediaDbContextConnection"));
+});
+
+// Register repositories
 builder.Services.AddScoped<IPictureRepository, PictureRepository>();
 builder.Services.AddScoped<INoteRepository, NoteRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 
-var loggerConfiguration = new LoggerConfiguration()
-    .MinimumLevel.Information() // levels: Trace< Information < Warning < Erorr < Fatal
-    .WriteTo.File($"APILogs/app_{DateTime.Now:yyyyMMdd_HHmmss}.log")
-    .Filter.ByExcluding(e => e.Properties.TryGetValue("SourceContext", out var value) &&
-                            e.Level == LogEventLevel.Information &&
-                            e.MessageTemplate.Text.Contains("Executed DbCommand"));
-var logger = loggerConfiguration.CreateLogger();
-builder.Logging.AddSerilog(logger);
-
 var app = builder.Build();
 
+// Configure middleware
 if (app.Environment.IsDevelopment())
 {
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
-app.UseStaticFiles();
+
+// Middleware ordering: Ensure proper handling of requests
 app.UseRouting();
-app.UseCors("CorsPolicy");
-app.MapControllerRoute(name: "api", pattern: "{controller}/{action=Index}/{id?}");
-    
+app.UseCors("CorsPolicy"); // Apply CORS policy here
+app.UseAuthorization();
+app.UseStaticFiles();
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}"); // Default route setup
+
 app.Run();
