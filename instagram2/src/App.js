@@ -1,22 +1,20 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import Container from 'react-bootstrap/Container';
+import HomePage from './Home/HomePage';
 import NotesPage from './Notes/NotesPage';
-import NotesCreate from './Notes/NotesCreate';
-import NotesDetails from './Notes/NotesDetails';
-import NotesEdit from './Notes/NotesEdit';
-
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<NotesPage />} />
-        <Route path="/notes/:id" element={<NotesDetails />} />
-        <Route path="/notes/create" element={<NotesCreate />} />
-        <Route path="/notes/edit/:id" element={<NotesEdit />} />
-      </Routes>
-    </Router>
+    <Container>
+        <Router>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/notes" element={<NotesPage />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+        </Router>
+    </Container>
   );
 }
 
 export default App;
-

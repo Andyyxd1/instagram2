@@ -13,7 +13,7 @@ const NotesPage= () => {
       setError(null);   // Clear any previous errors
   
       try {
-        const response = await fetch(`${API_URL}/api/note/GetNotes`); 
+        const response = await fetch(`${API_URL}/api/Note/GetNotes`); 
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }

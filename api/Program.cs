@@ -31,6 +31,7 @@ var app = builder.Build();
 // Configure middleware
 if (app.Environment.IsDevelopment())
 {
+    DBInit.SeedAsync(app);
     app.UseSwagger();
     app.UseSwaggerUI();
 }

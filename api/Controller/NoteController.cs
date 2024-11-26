@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using InstagramMVC.DTOs;
 
 namespace InstagramMVC.Controllers;
 
@@ -24,7 +25,7 @@ public class NoteController : ControllerBase
         _logger = logger;
     }
 
-    [HttpGet]
+    [HttpGet("GetNotes")]
     public async Task<IActionResult> GetNotes()
     {
         var notes = await _noteRepository.GetAll();
@@ -33,8 +34,13 @@ public class NoteController : ControllerBase
             _logger.LogError("[NoteController] Could not retrieve notes.");
             return NotFound(new { Message = "Notes not found." });
         }
-
-        return Ok(notes);
+        var noteDtos = notes.Select(note => new NoteDto
+        {
+            NoteId = note.NoteId,
+            Title = note.Title,
+            Content = note.Content,
+        });        
+        return Ok(noteDtos);
     }
 
     [HttpGet("{id}")]
