@@ -21,14 +21,6 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
-# Ignorer bin og obj mapper
-/bin
-/obj
-
-# Ignorer AssemblyInfo-filer som genereres automatisk
-*.AssemblyInfo.cs
-
 # Ignorer NuGet cache-filer
 *.nuget.cache
 
@@ -36,3 +28,9 @@ yarn-error.log*
 *.sourcelink.json
 
 /obj/api
+
+/bin
+/obj
+*.cache
+*.csproj.nuget.*
+*.AssemblyInfo.cs
