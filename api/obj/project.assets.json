@@ -7548,19 +7548,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\hassan\\.nuget\\packages\\": {}
+    "C:\\Users\\mbmik\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\hassan\\Documents\\DataIngeniør\\WebApp\\Instagram\\instagram2\\api\\api.csproj",
+      "projectUniqueName": "C:\\Users\\mbmik\\OneDrive\\Dokumenter\\GitHub\\instagram2\\api\\api.csproj",
       "projectName": "api",
-      "projectPath": "C:\\Users\\hassan\\Documents\\DataIngeniør\\WebApp\\Instagram\\instagram2\\api\\api.csproj",
-      "packagesPath": "C:\\Users\\hassan\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\hassan\\Documents\\DataIngeniør\\WebApp\\Instagram\\instagram2\\api\\obj\\",
+      "projectPath": "C:\\Users\\mbmik\\OneDrive\\Dokumenter\\GitHub\\instagram2\\api\\api.csproj",
+      "packagesPath": "C:\\Users\\mbmik\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\mbmik\\OneDrive\\Dokumenter\\GitHub\\instagram2\\api\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\hassan\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\mbmik\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
