@@ -40,6 +40,59 @@ public class NoteAPIController : ControllerBase
         });        
         return Ok(noteDtos);
     }
+
+    [HttpPost("create")]
+    public async Task<IActionResult> Create([FromBody] NoteDto noteDto)
+    {
+        if (noteDto == null)
+        {
+            return BadRequest("Note cannot be null");
+        }
+        var newNote= new Note
+        {
+            Title = noteDto.Title,
+            Content = noteDto.Content,
+            UploadDate = noteDto.UploadDate
+        };        
+        await _noteRepository.Create(newNote);
+        return CreatedAtAction(nameof(GetNotes), new { id = newNote.NoteId }, newNote);
+
+    }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetNote(int id)
+    {
+        var note = await _noteRepository.GetNoteById(id);
+        if (note == null)
+        {
+            _logger.LogError("[NoteAPIController] Note not found for the NoteId {NoteId:0000}", id);
+            return NotFound("Note not found for the NoteId");
+        }
+        return Ok(note);
+    }
+
+    [HttpPut("edit/{id}")]
+    public async Task<IActionResult> Edit(int id, [FromBody] NoteDto noteDto)
+    {
+        if (noteDto == null)
+        {
+            return BadRequest("Note data cannot be null");
+        }
+        // Find the note in the database
+        var existingNote = await _noteRepository.GetNoteById(id);
+        if (existingNote == null)
+        {
+            return NotFound("Note not found");
+        }
+        // Update the note properties
+        existingNote.Title = noteDto.Title;
+        existingNote.Content = noteDto.Content;
+        existingNote.UploadDate = noteDto.UploadDate;
+        // Save the changes
+        await _noteRepository.Edit(existingNote);
+        return Ok(existingNote); // Return the updated note
+    }
+
 }
 public class NoteController : Controller 
 {

@@ -1,17 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:5255/api/Note'; // Replace with your API URL
-
-// Fetch all notes
-export const getNotes = async () => {
-  try {
-    const response = await axios.get(`${API_BASE_URL}`);
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching notes", error);
-    throw error;
-  }
-};
+const API_BASE_URL = 'http://localhost:5255/api/NoteAPI/'; // Replace with your API URL
 
 // Fetch a single note by ID
 export const getNoteById = async (id) => {
@@ -27,7 +16,7 @@ export const getNoteById = async (id) => {
 // Create a new note
 export const createNote = async (note) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}`, note);
+    const response = await axios.post(`${API_BASE_URL}/`, note);
     return response.data;
   } catch (error) {
     console.error("Error creating note", error);
